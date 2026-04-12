@@ -2,6 +2,10 @@
 
 A minimal, modern SwiftUI app for controlling the fans on Intel-based Macs (including T2 models like the 2019 MacBook Pro). Choose between **Auto**, **Full Blast**, or a **Custom RPM** mode, apply it to either individual fans or all fans at once, and monitor live RPM and CPU temperature.
 
+<p align="center">
+  <img src="mac_fan_pro.png" alt="Mac Fan Controller Pro screenshot" width="360" />
+</p>
+
 > **Important:** This tool talks directly to the System Management Controller (SMC). Forcing fans outside their normal operating range is inherently risky — you can stress bearings, burn more power, or mask thermal events. Use at your own discretion.
 
 ---
