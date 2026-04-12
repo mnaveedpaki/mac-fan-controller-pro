@@ -28,7 +28,8 @@ A minimal, modern SwiftUI app for controlling the fans on Intel-based Macs (incl
 
 ## Requirements
 
-- **Intel Mac** (including T2 models). Apple Silicon (M1/M2/M3/M4) is **not** supported — those machines use a different fan controller. See [Apple Silicon](#apple-silicon-support) below.
+- **Intel Mac** (including T2 models) — tested on a 2019 MacBook Pro 16" i7.
+- **Apple Silicon (M1/M2/M3/M4)**: **not yet tested.** The app may partially work, silently fail, or do nothing. If you run an Apple Silicon Mac, please try it and [open an issue](https://github.com/mnaveedpaki/mac-fan-controller-pro/issues) with your findings — see [Apple Silicon](#apple-silicon-support) below for what to include.
 - macOS with Xcode 26 toolchain for building (set `MACOSX_DEPLOYMENT_TARGET` to your macOS version in the project settings if you want to build for older releases).
 - Administrator password — required once per app launch to authorize SMC writes.
 
@@ -154,13 +155,32 @@ rm /tmp/fan-controller.log
 
 ## Apple Silicon Support
 
-**Not supported.** On M1/M2/M3/M4 Macs:
+**Status: untested — community testing welcome.**
 
-- MacBook Air models have no fans at all.
-- MacBook Pro / Mac Studio / Mac mini / Mac Pro use a different controller — the keys, the IOKit service, and the data formats all differ.
-- Supporting Apple Silicon requires a separate implementation and physical access to the target hardware to probe the correct keys.
+The app has not been verified on M1/M2/M3/M4 Macs yet. It might partially work, it might do nothing. If you own an Apple Silicon Mac, running it and reporting back is genuinely useful.
 
-Pull requests implementing Apple Silicon support are welcome.
+What we know going in:
+
+- **MacBook Air (M-series)** has no fans, so fan control is moot. The app may still show CPU temperature if the sensor key matches — worth confirming.
+- **MacBook Pro / Mac Studio / Mac mini (Pro/Max) / Mac Pro** do have fans, but their fan controller differs from Intel SMC. The fan keys, the `AppleSMC` IOKit service behavior, and the data formats may all differ. `FS! ` force bits likely don't exist.
+
+### How to Help Test
+
+1. Download the Release `.app` (or build from source) and run it.
+2. Regardless of what the UI shows, click **Apply** once in **Full Blast** mode and enter your password (the helper always writes a log file even if the UI appears empty).
+3. Open Terminal and run:
+
+   ```bash
+   cat /tmp/fan-controller.log
+   ```
+
+4. [Open an issue](https://github.com/mnaveedpaki/mac-fan-controller-pro/issues/new) titled `Apple Silicon test: <your model>` and include:
+   - Exact Mac model and chip (e.g. "MacBook Pro 14" M3 Pro, 2023")
+   - macOS version (`sw_vers`)
+   - The contents of `/tmp/fan-controller.log`
+   - A screenshot of the app window
+
+Pull requests implementing full Apple Silicon support (new IOKit service, different SMC key mapping, etc.) are very welcome.
 
 ---
 
