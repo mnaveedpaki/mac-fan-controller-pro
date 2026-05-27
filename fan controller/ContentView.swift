@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var fanManager = FanManager()
+    @StateObject private var fanManager = FanManager()
 
     var body: some View {
         VStack(spacing: 16) {
@@ -33,7 +33,7 @@ struct ContentView: View {
         HStack {
             Image(systemName: "fan.fill")
                 .font(.title2)
-                .foregroundStyle(.blue)
+                .foregroundColor(.blue)
 
             Text("Fan Controller")
                 .font(.title2.bold())
@@ -43,7 +43,7 @@ struct ContentView: View {
             if fanManager.cpuTemperature > 0 {
                 HStack(spacing: 4) {
                     Image(systemName: temperatureIcon)
-                        .foregroundStyle(temperatureColor)
+                        .foregroundColor(temperatureColor)
                     Text(String(format: "%.1f°C", fanManager.cpuTemperature))
                         .font(.headline.monospacedDigit())
                 }
@@ -57,12 +57,12 @@ struct ContentView: View {
         VStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)
-                .foregroundStyle(.orange)
+                .foregroundColor(.orange)
             Text("Cannot Connect to SMC")
                 .font(.headline)
             Text(fanManager.errorMessage ?? "Unable to access the System Management Controller.")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
         .frame(height: 160)
@@ -73,12 +73,12 @@ struct ContentView: View {
         VStack(spacing: 12) {
             Image(systemName: "fan.slash")
                 .font(.largeTitle)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
             Text("No Fans Detected")
                 .font(.headline)
             Text("This Mac doesn't appear to have controllable fans.")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
 
             if fanManager.cpuTemperature > 0 {
@@ -152,7 +152,7 @@ struct ContentView: View {
 
             Text(fanManager.mode.description)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundColor(.secondary)
         }
     }
 
@@ -164,8 +164,7 @@ struct ContentView: View {
                 Spacer()
                 Text("\(Int(fanManager.customRPM)) RPM")
                     .font(.system(.title3, design: .rounded).monospacedDigit())
-                    .foregroundStyle(.blue)
-                    .contentTransition(.numericText())
+                    .foregroundColor(.blue)
             }
 
             Slider(
@@ -177,17 +176,17 @@ struct ContentView: View {
             HStack {
                 Text("\(Int(fanManager.sliderMin))")
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
                 Spacer()
                 if let maxFan = fanManager.fans.max(by: { $0.maxRPM < $1.maxRPM }) {
                     Text("Reported max: \(Int(maxFan.maxRPM))")
                         .font(.caption2)
-                        .foregroundStyle(.orange)
+                        .foregroundColor(.orange)
                 }
                 Spacer()
                 Text("\(Int(fanManager.sliderMax))")
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundColor(.secondary)
             }
         }
         .padding(12)
@@ -222,7 +221,7 @@ struct ContentView: View {
     private func errorBanner(_ message: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.yellow)
+                .foregroundColor(.yellow)
             Text(message)
                 .font(.caption)
         }
@@ -271,7 +270,7 @@ struct FanCard: View {
                 Button(action: onToggle) {
                     Image(systemName: isSelected ? "checkmark.square.fill" : "square")
                         .font(.title3)
-                        .foregroundStyle(isSelected ? .blue : .secondary)
+                        .foregroundColor(isSelected ? .blue : .secondary)
                 }
                 .buttonStyle(.plain)
                 .help(isSelected ? "Controlled by Apply" : "Not controlled")
@@ -281,8 +280,7 @@ struct FanCard: View {
                 Spacer()
                 Text("\(Int(fan.currentRPM)) RPM")
                     .font(.system(.title3, design: .rounded).monospacedDigit())
-                    .foregroundStyle(rpmColor)
-                    .contentTransition(.numericText())
+                    .foregroundColor(rpmColor)
             }
 
             ProgressView(
@@ -297,12 +295,15 @@ struct FanCard: View {
                 Text("Max: \(Int(fan.maxRPM)) RPM")
             }
             .font(.caption)
-            .foregroundStyle(.secondary)
+            .foregroundColor(.secondary)
         }
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color(nsColor: .controlBackgroundColor))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
                 .stroke(isSelected ? Color.blue.opacity(0.4) : Color.clear, lineWidth: 1.5)
         )
         .opacity(isSelected ? 1.0 : 0.6)

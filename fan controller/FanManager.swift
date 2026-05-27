@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import Combine
 import Security
 
 // MARK: - Models
@@ -37,16 +38,15 @@ struct FanInfo: Identifiable {
 
 // MARK: - Fan Manager
 
-@Observable
-class FanManager {
-    var fans: [FanInfo] = []
-    var selectedFans: Set<Int> = []
-    var mode: FanMode = .auto
-    var customRPM: Double = 3000
-    var cpuTemperature: Double = 0
-    var errorMessage: String?
-    var debugLog: String?
-    var isConnected = false
+class FanManager: ObservableObject {
+    @Published var fans: [FanInfo] = []
+    @Published var selectedFans: Set<Int> = []
+    @Published var mode: FanMode = .auto
+    @Published var customRPM: Double = 3000
+    @Published var cpuTemperature: Double = 0
+    @Published var errorMessage: String?
+    @Published var debugLog: String?
+    @Published var isConnected = false
 
     private let smc = SMCKit()
     private var pollTask: Task<Void, Never>?
@@ -123,7 +123,7 @@ class FanManager {
         pollTask = Task { [weak self] in
             while !Task.isCancelled {
                 self?.refresh()
-                try? await Task.sleep(for: .seconds(2))
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
             }
         }
     }

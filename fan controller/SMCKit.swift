@@ -119,8 +119,14 @@ class SMCKit {
     private(set) var isOpen = false
 
     func open() throws {
+        let mainPort: mach_port_t
+        if #available(macOS 12.0, *) {
+            mainPort = kIOMainPortDefault
+        } else {
+            mainPort = 0 // kIOMasterPortDefault equivalent
+        }
         let service = IOServiceGetMatchingService(
-            kIOMainPortDefault,
+            mainPort,
             IOServiceMatching("AppleSMC")
         )
         guard service != 0 else { throw SMCError.driverNotFound }
